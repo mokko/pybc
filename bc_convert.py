@@ -37,9 +37,9 @@ def write_bc (text,format):
                 'write_text': False, #default True
             })
             #image=image.resize((int(image.size[0]*0.6),40)) #resample=Image.LANCZOS
-            print (image.size)
+            #print (image.size)
             size=[int(x*0.7) for x in image.size] 
-            print (size)
+            #print (size)
             #image.thumbnail((250,60), Image.LANCZOS) # resizes image in place
             image.thumbnail(size)
             image.save('temp.png', dpi=(100,100))
@@ -115,20 +115,19 @@ def transformXlsx (infile, outfile):
                 m=re.match('{(\d)}', cell.value)
                 if m:
                     marked_cells[cid]=m.group(1)
-                    print (cell)
+                    #print (cell)
             else:
                 if cid in marked_cells and cell.value is not None:
                     m=re.search("\'\.(\D+\d+)", str(cell))
                     cname=m.group(1)
-                    print ('CNAME %s' % cname)
+                    #print ('CNAME %s' % cname)
                     write_bc (cell.value, marked_cells[cid])
+                    ws[cname] = ''
                     img = Image('temp.png')
                     ws.add_image(img, cname)
-                    print(cell.value)
-
-    
+                    #print(cell.value)
     wb.save(filename = outfile)
-    
+
 
 def print_cursor ():
     global c
