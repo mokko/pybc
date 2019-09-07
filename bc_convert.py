@@ -7,8 +7,10 @@ import os
 import time
 from PIL import Image
 
+VERSION=0.01
 VERBOSE=1
-MONITORDIR='C:/Users/User/eclipse-workspace/py-bc' #DOnt end with slash
+MONITORDIR='C:/temp/barcode' #DOnt end with slash
+os.makedirs(MONITORDIR, exist_ok=True)  # succeeds even if directory exists.
 
 def error (msg):
     print ('ERROR: '+ msg)
@@ -141,6 +143,7 @@ def print_cursor ():
 
 
 if __name__ == '__main__': 
+    verbose('bc_convert VERSION' % VERSION)
     verbose ('Listening for changes in %s' % MONITORDIR)
     c=0
     while True:
