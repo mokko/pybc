@@ -1,5 +1,5 @@
 docxtest/*
-oldscripts/+
+oldscripts/*
 oldtests/*
 __pycache__
 build/*
