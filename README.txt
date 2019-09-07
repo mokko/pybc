@@ -11,7 +11,6 @@ MUSEUMPLUS BERICHTE
 	Damit sinnvolle Barcodes entstehen, braucht man entsprechende Berichte aus
 	MuseumPlus, die hier in Zukunft gelistet werden sollen (wenn sie existieren).
 	
-
 START DES PROGRAMMS
 	Damit die Umwandlung funktioniert, muss man das Programm starten. Es läuft 
 	normalerweise so lange, bis man es wieder ausmacht (x oben rechts klickt)
@@ -27,7 +26,14 @@ START DES PROGRAMMS
 	Und dass wir im Augenblick nur mit Windows 7 und demnächst mit Windows 10 arbeiten. 
 
     Wenn das Programm läuft, sieht man ein schwarzes Fenster, in dem manchmal Status-
-    nachrichten erscheinen.
+    nachrichten erscheinen, die man aber nicht unbedingt lesen muss.
     
+TEMP FOLDER
+	Inhalte im Temp Folder (C:\temp) können von Zeit zu Zeit gelöscht werden, z.B. um 
+	Platz auf der Festplatte zu erhalten. Das gilt auf für das Unterverzeichnis
+		C:\temp\barcode
+	Bitte verwahren Sie dort keine wichtigen Informationen dauerhaft auf, sondern bewegen
+	Sie diese an einen geeigneten Ort.
+	
 "Kompiliert" mit pyinstaller --onefile bc_concert.py.
 
