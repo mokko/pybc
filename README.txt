@@ -13,8 +13,10 @@ MUSEUMPLUS BERICHTE
 	
 
 START DES PROGRAMMS
-	Damit die Umwandlung funktioniert, muss man das Programm starten. Es wird wohl
-	hier liegen:
+	Damit die Umwandlung funktioniert, muss man das Programm starten. Es läuft 
+	normalerweise so lange, bis man es wieder ausmacht (x oben rechts klickt)
+
+	Es wird wohl hier liegen:
 	
 		z.B. 
 		P:\Mengel\BC\64Win7\bc_convert.exe
