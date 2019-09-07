@@ -2,3 +2,4 @@ docxtest/*
 oldscripts/+
 oldtests/*
 __pycache__
+dist/*
