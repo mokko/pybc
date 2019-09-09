@@ -2,12 +2,11 @@ from docx import Document
 from docx.shared import Cm
 import re
 import sys
-from glob import iglob
+from glob import glob, iglob
 import os
 import time
 from PIL import Image
 
-VERSION=0.01
 VERBOSE=1
 MONITORDIR='C:/temp/barcode' #DOnt end with slash
 os.makedirs(MONITORDIR, exist_ok=True)  # succeeds even if directory exists.
@@ -23,6 +22,7 @@ def verbose (msg):
 def write_bc (text,format):
     if text != '':
         #verbose ('TT%s'% text)
+        outfile=os.path.join (MONITORDIR,'temp.png')
         if format == '1':
             import barcode
             from barcode import generate
@@ -44,7 +44,7 @@ def write_bc (text,format):
             #print (size)
             #image.thumbnail((250,60), Image.LANCZOS) # resizes image in place
             image.thumbnail(size)
-            image.save('temp.png', dpi=(100,100))
+            image.save(outfile, dpi=(100,100))# dpi?
             
         elif format == '2':
             #requires ghostscript
@@ -54,7 +54,7 @@ def write_bc (text,format):
             #image=image.resize((136,20), resample=Image.LANCZOS)
             #image.thumbnail((100,40), Image.LANCZOS) # resizes image in place
             #image=image.rotate(90, expand=True,  fillcolor="white")
-            image.save('temp.png')
+            image.save(outfile)
             #print (image)
         elif format == '3':
             from pubcode import Code128
@@ -63,7 +63,7 @@ def write_bc (text,format):
             image=barcode.image()# use defaults and do resize on our own
             #print (image.size[0]) 
             image=image.resize((image.size[0],20)) #resample=Image.LANCZOS
-            image.save('temp.png')
+            image.save(outfile)
         else:
             error ("No format recognized!")
 
@@ -75,7 +75,7 @@ def transformDocx (infile, outfile):
     verbose ("Table 0 grid: %i/%i"  % (nrows, ncols))
     
     marked_cells={}
-    
+    tmpImg=os.path.join (MONITORDIR,'temp.png')
     for rid in range (0,nrows):
         for cid in range (0, ncols):
             cell=doc.tables[0].rows[rid].cells[cid].text
@@ -91,7 +91,7 @@ def transformDocx (infile, outfile):
                     doc.tables[0].rows[rid].cells[cid].text=''
                     p = doc.tables[0].rows[rid].cells[cid].add_paragraph()
                     r = p.add_run()
-                    r.add_picture('temp.png')                    
+                    r.add_picture(tmpImg)
                     
     #print (marked_cells)
     doc.save(outfile)
@@ -108,6 +108,7 @@ def transformXlsx (infile, outfile):
 
     marked_cells={}
     #Excel notation is A2: column A with letter, row 2 with number
+    tmpImg=os.path.join (MONITORDIR,'temp.png')
 
     for rid in range(1, ws.max_row): #1-based
         verbose ('RID%s' % rid)
@@ -125,7 +126,7 @@ def transformXlsx (infile, outfile):
                     #print ('CNAME %s' % cname)
                     write_bc (cell.value, marked_cells[cid])
                     ws[cname] = ''
-                    img = Image('temp.png')
+                    img = Image(tmpImg)
                     ws.add_image(img, cname)
                     #print(cell.value)
     wb.save(filename = outfile)
@@ -143,28 +144,24 @@ def print_cursor ():
 
 
 if __name__ == '__main__': 
-    verbose('bc_convert VERSION' % VERSION)
     verbose ('Listening for changes in %s' % MONITORDIR)
-    c=0
+    c=0 # for cursor
     while True:
-        for fn in iglob(MONITORDIR+'/*.docx'):
+        for fn in iglob(MONITORDIR+'/*.docx') and iglob(MONITORDIR+'/*.xlsx'): 
+            #verbose ('Fn: '+fn)
             if os.path.isfile(fn): # not dir, can be file or link
-                base=os.path.basename(fn[:-5])
-                if not re.match('~', base):
+                base=os.path.basename(fn[:-5]) # just path/$base.$ext
+                ext=os.path.splitext(fn)[1]
+                if not re.match('\~\$', base):
+                    #print ("STILL: %s" % str(base))
                     if not re.search('-bc$', base):
-                        outfile=base+'-bc.docx'
+                        outfile=base+'-bc'+ext
+                        outfile=os.path.join (MONITORDIR, outfile)
                         if not os.path.exists(outfile): 
                             verbose ('%s --> %s' % (fn, outfile))
-                            transformDocx(fn, outfile)
-
-        for fn in iglob(MONITORDIR+'/*.xlsx'):
-            if os.path.isfile(fn): # not dir, can be file or link
-                base=os.path.basename(fn[:-5])
-                if not re.search('-bc$', base):
-                    outfile=base+'-bc.xlsx'
-                    if not os.path.exists(outfile): 
-                        verbose ('%s --> %s' % (fn, outfile))
-                        transformXlsx(fn, outfile)
-
-        time.sleep(3)    
+                            if ext == ".docx":
+                                transformDocx(fn, outfile)
+                            else:
+                                transformXlsx(fn, outfile)
+        time.sleep(3)
         print_cursor()

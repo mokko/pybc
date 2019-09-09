@@ -1,4 +1,4 @@
-docxtest/*
+docxtests/*
 oldscripts/*
 oldtests/*
 __pycache__
